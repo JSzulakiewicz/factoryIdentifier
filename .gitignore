@@ -1,0 +1,9 @@
+FactoryId/BackEnd/bin/
+FactoryId/BackEnd/obj/
+FactoryId/Db/bin/Debug/Db.dll.config
+FactoryId/Db/bin/Debug/EntityFramework.SqlServer.xml
+FactoryId/Db/bin/
+FactoryId/Db/obj/
+FactoryId/packages/
+FactoryId/WebService/bin/
+FactoryId/WebService/obj/

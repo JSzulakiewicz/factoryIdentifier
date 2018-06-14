@@ -1,0 +1,163 @@
+﻿
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Generator numerówczęści</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="Content/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container">
+
+
+        <div class="row">
+            <div class="col-sm-4">
+                <h4>
+                    <span class="text-muted">Lista fabryk:</span>
+                    <span class="badge" id="number-of-factories">2</span>
+                </h4>
+
+                <ul class="list-group" id="factory-list">
+                    <li class="list-group-item">
+                        Gliwice
+                    </li>
+                    <li class="list-group-item">
+                        Szczebrzeszyn
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-4">
+                <h4>
+                    <span class="text-muted">Lista kategorii:</span>
+                    <span class="badge" id="number-of-categories" >4</span>
+                </h4>
+                <ul class="list-group" id="category-list">
+                    <li class="list-group-item">
+                        amortyzator
+                    </li>
+                    <li class="list-group-item">
+                        felga
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-4">
+                <h4>
+                    <span class="text-muted">Dodaj nowy element:</span>
+                </h4>
+                <form class="needs-validation">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="categoryName">Kategoria</label>
+                            <input type="text" class="form-control" id="categoryName">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="factoryName">Fabryka</label>
+                            <input type="text" class="form-control" id="factoryName">
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-offset-9">
+                            <button type="button" class="btn" id="add-new-element">Dodaj</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-4">
+                <h4>
+                    <span class="text-muted">Sprawdź element:</span>
+                </h4>
+                <form class="needs-validation">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label for="item-number">Symbol elementu</label>
+                            <input type="text" class="form-control" id="item-number">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-2 col-sm-offset-9">
+                            <button type="button" class="btn" id="check-part">Sprawdź</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="row" id="check-element-info">
+                    <div class="col-sm-12">
+                        Symbol: <span id="symbol" ></span><br />
+                        Fabryka: <span id="factory"></span><br />
+                        Kategoria: <span id="category"></span><br />
+                        Data utworzenia: <span id="creation-date"></span>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/Scripts/jquery-1.10.2.min.js"></script>
+    <script>
+        (function () {
+            $.ajax("/api/Factories").then(function (data) {
+                for (i = 0; i < data.length; i++)
+                {
+                    $("#factory-list").append('<li class="list-group-item">' + data[i] + '</li>');
+                }
+            })
+
+            $.ajax("/api/Categories").then(function (data) {
+                for (i = 0; i < data.length; i++) {
+                    $("#category-list").append('<li class="list-group-item">' + data[i] + '</li>');
+                }
+            })
+
+            $("#add-new-element").click(function (e) {
+                e.preventDefault();
+                category = $("#categoryName").val();
+                factory = $("#factoryName").val();
+
+                $.ajax({
+                            url: '/api/Parts/Post',
+                            type: 'POST',
+                            data: "category=" + category + "&factory=" + factory
+                })
+            });
+
+            $("#check-part").click(function(e){
+                e.preventDefault();
+                partName = $("#item-number").val();
+                $.ajax({
+                    url: '/api/Parts/Get/' + partName,
+                    type: 'GET',
+                })
+                .then(function(data){
+                    $("#symbol").text(data.Name);
+                    $("#factory").text(data.FactoryName);
+                    $("#category").text(data.CategoryName);
+                    $("#creation-date").text(data.CreationDate);
+                })
+
+            })
+
+
+            
+      })();
+    </script>
+</body>
+</html>
