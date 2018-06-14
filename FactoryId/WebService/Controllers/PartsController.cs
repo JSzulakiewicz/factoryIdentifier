@@ -22,9 +22,10 @@ namespace WebService.Controllers
             public string Category { get; set; }
         }
 
-        public void Post(NewPart param)
+        public string Post(NewPart param)
         {
-            new PartsManipulator().GenerateNewPart(param.Factory, param.Category);
+            var part = new PartsManipulator().GenerateNewPart(param.Factory, param.Category);
+            return new PartModel(part).Name;
         }
 
         public void Delete(string id)

@@ -114,47 +114,61 @@
     <script src="/Scripts/jquery-1.10.2.min.js"></script>
     <script>
         (function () {
-            $.ajax("/api/Factories").then(function (data) {
-                for (i = 0; i < data.length; i++)
-                {
-                    $("#factory-list").append('<li class="list-group-item">' + data[i] + '</li>');
-                }
-            })
-
-            $.ajax("/api/Categories").then(function (data) {
-                for (i = 0; i < data.length; i++) {
-                    $("#category-list").append('<li class="list-group-item">' + data[i] + '</li>');
-                }
-            })
-
+            refreshFactories();
+            refreshCategories();
             $("#add-new-element").click(function (e) {
                 e.preventDefault();
                 category = $("#categoryName").val();
                 factory = $("#factoryName").val();
 
-                $.ajax({
-                            url: '/api/Parts/Post',
-                            type: 'POST',
-                            data: "category=" + category + "&factory=" + factory
-                })
+                    $.ajax({
+                        url: '/api/Parts/Post',
+                        type: 'POST',
+                        data: "category=" + category + "&factory=" + factory
+                    })
+                    .then(function(data) {
+                        alert(data);
+                        refreshCategories();
+                        refreshFactories();
+                    });
             });
 
-            $("#check-part").click(function(e){
-                e.preventDefault();
-                partName = $("#item-number").val();
-                $.ajax({
-                    url: '/api/Parts/Get/' + partName,
-                    type: 'GET',
-                })
-                .then(function(data){
-                    $("#symbol").text(data.Name);
-                    $("#factory").text(data.FactoryName);
-                    $("#category").text(data.CategoryName);
-                    $("#creation-date").text(data.CreationDate);
-                })
+                $("#check-part").click(function(e) {
+                    e.preventDefault();
+                    partName = $("#item-number").val();
+                    $.ajax({
+                               url: '/api/Parts/Get/' + partName,
+                               type: 'GET',
+                           })
+                        .then(function(data) {
+                            $("#symbol").text(data.Name);
+                            $("#factory").text(data.FactoryName);
+                            $("#category").text(data.CategoryName);
+                            $("#creation-date").text(data.CreationDate);
+                        })
+                });
 
-            })
+                function refreshCategories()
+                {
+                    $("#category-list").text("")
+                    $.ajax("/api/Categories").then(function (data) {
+                        for (i = 0; i < data.length; i++) {
+                            $("#category-list").append('<li class="list-group-item">' + data[i] + '</li>');
+                        }
+                    })
+                }
 
+                function refreshFactories() {
+                    $("#factory-list").text("")
+
+                    $.ajax("/api/Factories").then(function (data) {
+                        for (i = 0; i < data.length; i++)
+                        {
+                            $("#factory-list").append('<li class="list-group-item">' + data[i] + '</li>');
+                        }
+                    })
+                }
+                
 
             
       })();
